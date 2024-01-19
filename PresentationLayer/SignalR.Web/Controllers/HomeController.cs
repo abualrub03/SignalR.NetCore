@@ -76,6 +76,14 @@ namespace SignalR.Controllers
         }
 
 
+		public IActionResult Sign_In()
+		{
+			return View();
+		}
+		public IActionResult Sign_Up()
+		{
+			return View();
+		}
 
 
 
@@ -89,17 +97,13 @@ namespace SignalR.Controllers
 
 
 
-        private readonly ILogger<HomeController> _logger;
+		private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
         
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
