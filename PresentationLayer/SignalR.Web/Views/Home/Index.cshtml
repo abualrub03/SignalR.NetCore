@@ -1,0 +1,204 @@
+﻿@model ViewModel.HomePageViewModel
+@{
+    ViewData["Title"] = "Index";
+    
+}
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<style type="text/css">
+    table{
+        border:double 2px;
+        cellpadding: 1px;
+        cellspacing:1px;
+    }
+</style>
+@section scripts{
+    <script type="text/javascript">
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+
+
+
+        setInterval(function () {
+
+            $.ajax({
+                url: '@Url.Action("ActiveList", "Home")', 
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                   
+                    console.log(response);
+                    let table = $("<table>");
+                    $.each(response, function (index, Account) {
+                        $("<tr>")
+                            .append($("<td>").text(Account.fullName))
+                            .append($("<td>").text(Account.connectionId))
+                            .appendTo(table);
+                    });
+                    table.appendTo("body");
+                }
+            });
+
+
+
+            
+        }, 5000); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $(document).on('click', function () {
+            
+                $.ajax({
+                    url: '@Url.Action("UpdateLastActivity", "Home")', 
+                    type: 'GET',
+                    data: {Id: '@Model.account.Id' }, 
+                    dataType: 'json', 
+                    success: function () {
+                        console.log("yup"); 
+                    },
+                    
+                });
+
+
+        });
+        
+       /*
+        $(window).on('beforeunload', function () {
+            connection.invoke("EndClientConnection", @Model.account.Id.ToString());
+            connection.stop();
+
+        });
+        */
+        connection.start().then(function () {
+            connection.invoke("GetConnectionId",@Model.account.Id.ToString()).then(function (id) {
+                document.getElementById("connectionId").innerText = id;
+            });
+            document.getElementById("sendButton").disabled = false;
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        
+        document.getElementById("sendButton").addEventListener("click", function (event) {
+            var user = document.getElementById("userInput").value;
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", user, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+
+
+
+        document.getElementById("sendToUser").addEventListener("click", function (event) {
+            var user = document.getElementById("userInput").value;
+            var receiverConnectionId = document.getElementById("receiverId").value;
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendToUser", user, receiverConnectionId, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+        connection.on("ReceiveMessage", function (user, message) {
+            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var encodedMsg = user + " says " + msg;
+            var li = document.createElement("li");
+            li.textContent = encodedMsg;
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+
+    </script>
+
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">Connection Id</div>
+        <div class="col-6"><span id="connectionId" /></div>
+    </div>
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-2">User</div>
+        <div class="col-4"><input type="text" id="userInput" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2">Message</div>
+        <div class="col-4"><input type="text" id="messageInput" /></div>
+    </div>
+    <div class="row">
+        <div class="col-2">Receiver Id</div>
+        <div class="col-4"><input type="text" id="receiverId" /></div>
+    </div>
+
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">
+            <input type="button" id="sendToUser" value="Send Message" />&nbsp;&nbsp;
+            <input type="button" id="sendButton" value="Send Message to All" />
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <hr />
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <ul id="messagesList"></ul>
+    </div>
+</div>
+<br />
+
+<table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>ConnectionId</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var acc in Model.accounts)
+        {
+            <tr>
+                <td>
+                    @acc.FullName
+                </td>
+                <td>
+                    @acc.ConnectionId
+
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+    
+</table>
+
+
+<br />
+
+<form action="/Home/SignOut" method="post">
+    
+    <input  type="hidden" name="Id" value="@Model.account.Id"/>
+    <button type="submit" value="SignOut">SignOut</button>
+</form>
+<br />
+
+<br />
+
+
+

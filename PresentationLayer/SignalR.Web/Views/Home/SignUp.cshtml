@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "SignUp";
+}
+
+<h1>SignUp</h1>
+
+<form action="/Home/SignUpRequest" method="post">
+    <br />
+    <label for="FullName">Full Name:</label>
+    <input type="text" id="FullName" name="FullName" required>
+    <br />
+    <label for="UserName">User Name:</label>
+    <input type="text" id="UserName" name="UserName" required>
+    <br />
+    <label for="Email">Email:</label>
+    <input type="text" id="Email" name="Email" required>
+    <br />
+    <label for="Password">Password:</label>
+    <input type="text" id="Password" name="Password" required>
+    <br />
+    <label for="PhoneNumber">PhoneNumber:</label>
+    <input type="text" id="PhoneNumber" name="PhoneNumber" required>
+    <br />
+    <button type="submit">Submit</button>
+</form>
+
