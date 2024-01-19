@@ -23,11 +23,7 @@ namespace SignalR.Controllers
 
 
 
-        [Route("/")]
-        public IActionResult HomePage()
-        {
-            return View("HomePage");
-        }
+    
         public IActionResult Index( Entities.Account dp)
         {
             var a = new SignalRProvider.AccountProvider().spListAllOnlineAccounts();
@@ -47,8 +43,10 @@ namespace SignalR.Controllers
             var dp = new SignalRProvider.AccountProvider();
             dp.spSignUpAccount(account);
             return View("HomePage");
-        } 
-        public IActionResult SignIn()
+        }
+		[Route("/")]
+
+		public IActionResult SignIn()
         {
             return View();
         }
@@ -63,7 +61,7 @@ namespace SignalR.Controllers
             }
             else
             {
-                return HomePage();
+                return SignIn();
             }
            
         }
@@ -72,7 +70,7 @@ namespace SignalR.Controllers
         {
             var dp = new SignalRProvider.AccountProvider();
             var acc = dp.spEndConnection(Id);
-            return HomePage();
+            return SignIn();
         }
 
 
