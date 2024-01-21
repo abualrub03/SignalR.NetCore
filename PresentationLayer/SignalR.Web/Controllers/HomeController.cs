@@ -52,7 +52,7 @@ namespace SignalR.Controllers
 		[Route("/")]
 		public IActionResult SignIn()
         {
-            return View();
+            return View("SignIn");
         }
         [HttpPost]
         public IActionResult SignInRequest(Entities.Account account)
