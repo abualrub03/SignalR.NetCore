@@ -6,12 +6,33 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 @section scripts{
     <script type="text/javascript">
-		function addParagraph(message) {
-			const textElement = document.querySelector(".message .text-main .text-group .text");
-			const newParagraph = document.createElement("p");
-			newParagraph.textContent = message;
-			textElement.appendChild(newParagraph);
+		function recevedMessage(message) {
+			document.getElementById("msgContainer").innerHTML +=
+				`<div class="message">
+							<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+							<div class="text-main">
+								<div class="text-group">
+									<div class="text">
+										<p> ` + message +  ` </p>
+									</div>
+								</div>
+
+							</div>
+						</div>`;
 		}
+		function sentMessage(message) {
+			document.getElementById("msgContainer").innerHTML +=
+				`<div class="message me">
+							<div class="text-main">
+								<div class="text-group me">
+									<div class="text me">
+														<p> ` + message + ` </p>
+									</div>
+								</div>
+							</div>
+						</div> `;
+		}
+
         document.getElementById("sendToUser").addEventListener("click", function (event) {
 			var user = "test";
 			var receiverConnectionId = "@Model.accounts[0].ConnectionId";
@@ -21,10 +42,11 @@
                 return console.error(err.toString());
             });
             event.preventDefault();
+			sentMessage(message);
         });
         connection.on("ReceiveMessage", function (user, message) {
 			console.log(message);
-			addParagraph(message);
+			recevedMessage(message);
         });
     </script>
 }
@@ -60,35 +82,21 @@
 		</div>
 	</div>
 	<div class="content" id="content">
-		<div class="container">
-			
+		<div id="msgContainer" class="container">
+			<!--
 				<div class="message">
 					<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 					<div class="text-main">
 						<div class="text-group">
 							<div class="text">
-								
+								<p></p>
 							</div>
 						</div>
 						
 					</div>
 				</div>
-				<!--
-				<div class="message me">
-					<div class="text-main">
-						<div class="text-group me">
-							<div class="text me">
-								<p>Roger that boss!</p>
-							</div>
-						</div>
-						<div class="text-group me">
-							<div class="text me">
-								<p>I have already started gathering some stuff for the mood boards, excited to start!</p>
-							</div>
-						</div>
-						<span>10:21 PM</span>
-					</div>
-				</div>
+				
+				
 			-->
 		</div>
 	</div>
