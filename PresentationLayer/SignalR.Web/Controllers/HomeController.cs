@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
 using SignalR.Hubs;
-using SignalR.Models;
 using System;
 using System.Data;
 using System.Diagnostics;
-
 namespace SignalR.Controllers
 {
     public class HomeController : Controller
@@ -17,22 +16,28 @@ namespace SignalR.Controllers
         [HttpGet]
         public List<Entities.Account> ActiveList()
         {
-            var a = new SignalRProvider.AccountProvider().spListAllOnlineAccounts();
+            var a = new SignalRProvider.AccountProvider().spListAllAccounts();
             return a;
         }
-
-
-
-    
-        public IActionResult Index( Entities.Account dp)
+        public IActionResult DashBoard( Entities.Account dp)
         {
-            var a = new SignalRProvider.AccountProvider().spListAllOnlineAccounts();
+            var a = new SignalRProvider.AccountProvider().spListAllAccounts();
             var vm = new ViewModel.HomePageViewModel();
             vm.account = dp;
             vm.accounts = a;
-            return View("Index",vm);
+            return View("DashBoard",vm);
         }
-        
+        [HttpGet]
+        public IActionResult _Users(int Id)
+		{
+            Account dp = new Account();
+            dp.Id = Id;
+			var a = new SignalRProvider.AccountProvider().spListAllAccounts();
+			var vm = new ViewModel.HomePageViewModel();
+			vm.account = dp;
+			vm.accounts = a;
+			return PartialView("_Users", vm);
+		}
         public IActionResult SignUp()
         {
             return View();
@@ -45,7 +50,6 @@ namespace SignalR.Controllers
             return View("HomePage");
         }
 		[Route("/")]
-
 		public IActionResult SignIn()
         {
             return View();
@@ -57,13 +61,12 @@ namespace SignalR.Controllers
             var acc = dp.spSignInRequest(account);
             if (dp != null)
             { 
-                return Index(acc);
+                return DashBoard(acc);
             }
             else
             {
                 return SignIn();
             }
-           
         }
         [HttpPost]
         public IActionResult SignOut(int Id)
@@ -72,41 +75,31 @@ namespace SignalR.Controllers
             var acc = dp.spEndConnection(Id);
             return SignIn();
         }
-
-
 		public IActionResult Sign_In()
 		{
 			return View();
+		}
+        [HttpPost]
+        public void SetConId(string conId , int userId )
+		{
+            new SignalRProvider.AccountProvider().ConnectUser(conId, userId);
 		}
 		public IActionResult Sign_Up()
 		{
 			return View();
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-		private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-        
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        [HttpPost]
+        public IActionResult _Chat(int accountId , int friendId)
+		{
+            var a = new ViewModel.HomePageViewModel();
+            Account i = new Account(); 
+            i.Id = accountId;
+            var ii = new SignalRProvider.AccountProvider().returnAccountOnId(friendId);
+            var list = new List<Account>();
+            list.Add(ii);
+			a.account = i;
+            a.accounts = list;
+			return PartialView("_Chat",a);
+		}
     }
 }

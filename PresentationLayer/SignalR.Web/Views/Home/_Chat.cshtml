@@ -1,0 +1,105 @@
+﻿@model ViewModel.HomePageViewModel
+@{
+    ViewData["Title"] = "_Chat";
+    Layout = "_DashboardLayout";
+}
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+@section scripts{
+    <script type="text/javascript">
+		function addParagraph(message) {
+			const textElement = document.querySelector(".message .text-main .text-group .text");
+			const newParagraph = document.createElement("p");
+			newParagraph.textContent = message;
+			textElement.appendChild(newParagraph);
+		}
+        document.getElementById("sendToUser").addEventListener("click", function (event) {
+			var user = "test";
+			var receiverConnectionId = "@Model.accounts[0].ConnectionId";
+			console.log(receiverConnectionId);
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendToUser", user, receiverConnectionId, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+        connection.on("ReceiveMessage", function (user, message) {
+			console.log(message);
+			addParagraph(message);
+        });
+    </script>
+}
+<div class="chat" id="chat1">
+	<div class="top">
+		<div class="container">
+			<div class="col-md-12">
+				<div class="inside">
+					<a href="#"><img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+					<!--<div class="status">
+						<i class="material-icons online">fiber_manual_record</i>
+					</div>-->
+					<div class="data">
+						<h5><a href="#">@Model.accounts[0].FullName</a></h5>
+						<!--<span>Active now</span>-->
+					</div>
+					<!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
+					<button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>
+					<button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
+					<div class="dropdown">
+						<button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
+						<div class="dropdown-menu dropdown-menu-right">
+							<button class="dropdown-item connect" name="1"><i class="material-icons">phone_in_talk</i>Voice Call</button>
+							<button class="dropdown-item connect" name="1"><i class="material-icons">videocam</i>Video Call</button>
+							<hr>
+							<button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
+							<button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
+							<button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
+						</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="content" id="content">
+		<div class="container">
+			
+				<div class="message">
+					<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+					<div class="text-main">
+						<div class="text-group">
+							<div class="text">
+								
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<!--
+				<div class="message me">
+					<div class="text-main">
+						<div class="text-group me">
+							<div class="text me">
+								<p>Roger that boss!</p>
+							</div>
+						</div>
+						<div class="text-group me">
+							<div class="text me">
+								<p>I have already started gathering some stuff for the mood boards, excited to start!</p>
+							</div>
+						</div>
+						<span>10:21 PM</span>
+					</div>
+				</div>
+			-->
+		</div>
+	</div>
+	<div class="container">
+		<div class="col-md-12">
+			<div class="bottom">
+				<div class="position-relative w-100">
+					<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"></textarea>
+					<button type="button" id="sendToUser" class="btn send"><i class="material-icons">send</i></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

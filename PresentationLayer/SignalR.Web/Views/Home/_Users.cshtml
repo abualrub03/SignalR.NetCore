@@ -1,0 +1,64 @@
+﻿@model ViewModel.HomePageViewModel
+@{
+    ViewData["Title"] = "_Users";
+	
+}
+
+<div id="discussions" class="tab-pane fade active show">
+	<!-- <div class="search">
+		<form class="form-inline position-relative">
+			<input type="search" class="form-control" id="conversations" placeholder="Search for conversations...">
+			<button type="button" class="btn btn-link loop"><i class="material-icons">search</i></button>
+		</form>
+		<button class="btn create" data-toggle="modal" data-target="#startnewchat"><i class="material-icons">create</i></button>
+	</div>
+	<div class="list-group sort">
+		<button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">All</button>
+		<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="read">Read</button>
+		<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Unread</button>
+	</div>-->
+	<div class="discussions">
+		<h1>Discussions</h1>
+		<div class="list-group" id="chats" role="tablist">
+			@foreach (var item in Model.accounts)
+			{
+				@if (item.Id != Model.account.Id)
+				{
+
+					<a href="#list-chat" class="filterDiscussions all unread single " id="list-chat-list" data-toggle="list" role="tab" onclick="openChat('@item.Id')">>
+						<img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+						@if (item.IsActive == 1)
+						{
+							<div class="status">
+								<i class="material-icons online">fiber_manual_record</i>
+							</div>
+						}
+						else
+						{
+							<div class="status">
+								<i class="material-icons offline">fiber_manual_record</i>
+							</div>
+						}
+
+
+						<!-- <div class="new bg-yellow">
+							<span>+7</span>
+						</div> -->
+						<div class="data">
+							<h5>@item.FullName</h5>
+							<!--
+							<span>Mon</span>
+							<p>A new feature has been updated to your account. Check it out...</p>
+							-->
+						</div>
+					</a>
+
+
+				}
+			}
+
+
+
+		</div>
+	</div>
+</div>

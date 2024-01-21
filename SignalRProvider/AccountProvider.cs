@@ -29,6 +29,15 @@ namespace SignalRProvider
             };
             return DAL2.ExecuteReader<Entities.Account>("spSignInRequest").FirstOrDefault();
         }
+        
+        public Entities.Account returnAccountOnId(int Id)
+        {
+            using var DAL2 = new DataAccess.DataAccessLayer();
+            DAL2.Parameters = new List<SqlParameter> {
+                new SqlParameter{ ParameterName = "@Id", Value =  Id},
+            };
+            return DAL2.ExecuteReader<Entities.Account>("spreturnAccountOnId").FirstOrDefault();
+        }
 
         
         public bool spStartConnection(int Id , string ConnectionId)
@@ -52,7 +61,7 @@ namespace SignalRProvider
         }
 
 
-        public List<Entities.Account> spListAllOnlineAccounts()
+        public List<Entities.Account> spListAllAccounts()
         {
 
             using var DAL2 = new DataAccess.DataAccessLayer();
@@ -69,7 +78,18 @@ namespace SignalRProvider
             };
             return DAL.ExecuteNonQuery("UpdateLastActivity");
         }
-
+        
+        
+        public bool ConnectUser(string conId, int userId)
+        {
+            using var DAL = new DataAccess.DataAccessLayer();
+            DAL.Parameters = new List<SqlParameter> {
+                new SqlParameter{ ParameterName = "@conId", Value =  conId },
+                new SqlParameter{ ParameterName = "@userId", Value =  userId },
+			};
+            return DAL.ExecuteNonQuery("spConnectUser");
+        }
+        
 
 
 
