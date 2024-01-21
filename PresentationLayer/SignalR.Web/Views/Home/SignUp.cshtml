@@ -2,29 +2,6 @@
 @{
     ViewData["Title"] = "SignUp";
 }
-
-<h1>SignUp</h1>
-
-<form action="/Home/SignUpRequest" method="post">
-    <br />
-    <label for="FullName">Full Name:</label>
-    <input type="text" id="FullName" name="FullName" required>
-    <br />
-    <label for="UserName">User Name:</label>
-    <input type="text" id="UserName" name="UserName" required>
-    <br />
-    <label for="Email">Email:</label>
-    <input type="text" id="Email" name="Email" required>
-    <br />
-    <label for="Password">Password:</label>
-    <input type="text" id="Password" name="Password" required>
-    <br />
-    <label for="PhoneNumber">PhoneNumber:</label>
-    <input type="text" id="PhoneNumber" name="PhoneNumber" required>
-    <br />
-    <button type="submit">Submit</button>
-</form>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,11 +11,11 @@
 	<meta name="description" content="#">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Bootstrap core CSS -->
-	<link href="dist/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
+	<link href="/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
 	<!-- Swipe core CSS -->
-	<link href="dist/css/swipe.min.css" type="text/css" rel="stylesheet">
+	<link href="/css/swipe.min.css" type="text/css" rel="stylesheet">
 	<!-- Favicon -->
-	<link href="dist/img/favicon.png" type="image/png" rel="icon">
+	<link href="/img/favicon.png" type="image/png" rel="icon">
 </head>
 <body class="start">
 	<main>
@@ -62,22 +39,33 @@
 									</button>
 								</div>
 								<p>or use your email for registration:</p>
-								<form class="signup">
+								<form class="signup" action="/Home/SignUpRequest" method="post" >
 									<div class="form-parent">
 										<div class="form-group">
-											<input type="text" id="inputName" class="form-control" placeholder="Username" required>
+											<input type="text" id="inputName" class="form-control" name="UserName" placeholder="Username" required>
 											<button class="btn icon"><i class="material-icons">person_outline</i></button>
 										</div>
 										<div class="form-group">
-											<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required>
+											<input type="email" id="inputEmail" class="form-control" name="Email"  placeholder="Email Address" required>
 											<button class="btn icon"><i class="material-icons">mail_outline</i></button>
 										</div>
+										
+										
 									</div>
 									<div class="form-group">
-										<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+										<input type="text" id="inputName" class="form-control" name="FullName" placeholder="Username" required>
+										<button class="btn icon"><i class="material-icons">person_outline</i></button>
+									</div>
+									<div class="form-group">
+										<input type="password" id="inputPassword" name="Password" class="form-control" placeholder="Password" required>
 										<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 									</div>
-									<button type="submit" class="btn button" formaction="index-2.html">Sign Up</button>
+									<div class="form-group">
+										<input type="text" id="inputName" class="form-control" name="PhoneNumber" placeholder="Username" required>
+										<button class="btn icon"><i class="material-icons">person_outline</i></button>
+									</div>
+									
+									<button type="submit" class="btn button" >Sign Up</button>
 									<div class="callout">
 										<span>Already a member? <a href="sign-in.html">Sign In</a></span>
 									</div>
@@ -106,10 +94,10 @@
 	<!-- Bootstrap core JavaScript
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="dist/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script>window.jQuery || document.write('<script src="dist/js/vendor/jquery-slim.min.js"><\/script>')</script>
-	<script src="dist/js/vendor/popper.min.js"></script>
-	<script src="dist/js/bootstrap.min.js"></script>
+	<script src="/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script>window.jQuery || document.write('<script src="/js/vendor/jquery-slim.min.js"><\/script>')</script>
+	<script src="/js/vendor/popper.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
 </body>
 
 
