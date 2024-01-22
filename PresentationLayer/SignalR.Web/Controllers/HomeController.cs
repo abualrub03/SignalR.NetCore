@@ -8,7 +8,20 @@ namespace SignalR.Controllers
 {
     public class HomeController : Controller
     {
-        [HttpGet]
+        public bool CheckActivity (int Id)
+        {
+            var result = new SignalRProvider.AccountProvider().CheckActivity (Id);
+            if(result.IsActive == 1)
+            {
+				return true;
+            }
+            else
+            {
+                return false;
+            }
+		}
+
+		[HttpGet]
         public void UpdateLastActivity(int Id)
         {
             var a = new SignalRProvider.AccountProvider().UpdateLastActivity(Id);
@@ -54,6 +67,9 @@ namespace SignalR.Controllers
         {
             return View("SignIn");
         }
+
+    
+
         [HttpPost]
         public IActionResult SignInRequest(Entities.Account account)
         {
@@ -68,13 +84,15 @@ namespace SignalR.Controllers
                 return SignIn();
             }
         }
-        [HttpPost]
+       
+		[HttpGet]
         public IActionResult SignOut(int Id)
         {
             var dp = new SignalRProvider.AccountProvider();
             var acc = dp.spEndConnection(Id);
             return SignIn();
         }
+
 		public IActionResult Sign_In()
 		{
 			return View();

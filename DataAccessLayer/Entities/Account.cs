@@ -10,7 +10,5 @@
         public string PhoneNumber { get; set; }
         public string ConnectionId { get; set; }
         public int IsActive { get; set; }
-          
-
     }
 }

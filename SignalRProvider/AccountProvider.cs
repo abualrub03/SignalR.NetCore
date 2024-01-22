@@ -50,6 +50,7 @@ namespace SignalRProvider
             };
             return DAL.ExecuteNonQuery("spStartConnection");
         }
+
         public bool spEndConnection(int Id)
         {
             using var DAL = new DataAccess.DataAccessLayer();
@@ -89,25 +90,18 @@ namespace SignalRProvider
 			};
             return DAL.ExecuteNonQuery("spConnectUser");
         }
-        
 
 
+		public Entities.Account CheckActivity(int Id)
+		{
+			using var DAL2 = new DataAccess.DataAccessLayer();
+			DAL2.Parameters = new List<SqlParameter> {
+			  new SqlParameter{ ParameterName = "@Id", Value =  Id },
+            };
+			return DAL2.ExecuteReader<Entities.Account>("spCheckActivity").FirstOrDefault();
+		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
+		/*
         public List<Entities.Contact> getAllContacts()
         {
             using var DAL = new DataAccess.DataAccessLayer();
@@ -202,6 +196,6 @@ namespace SignalRProvider
         }
         */
 
-    }
+	}
 }
 

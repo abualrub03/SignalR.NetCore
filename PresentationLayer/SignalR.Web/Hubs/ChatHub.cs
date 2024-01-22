@@ -8,9 +8,10 @@ namespace SignalR.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-        public async Task SendToUser(string user, string receiverConnectionId, string message)
+        public async Task SendToUser(int senderId, int receiverId, string message)
         {
-            await Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", user, message);
+            var acc = new SignalRProvider.AccountProvider().returnAccountOnId(receiverId) ;
+            await Clients.Client(acc.ConnectionId).SendAsync("ReceiveMessage", senderId, message);
         }
         public string GetConnectionId(int Id) {
             var conID = Context.ConnectionId;

@@ -6,6 +6,8 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 @section scripts{
 	<script>
+		const signOutButton = document.getElementById('btnSignOut');
+		
 		var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 		connection.start().then(function () {
 			connection.invoke("GetConnectionId", @Model.account.Id.ToString()).then(function (id) {
@@ -47,6 +49,19 @@
 				}
 			});
 		}
+		document.addEventListener("keydown", function (event) {
+			console.log("You pressed:", event.key);
+			$.ajax({
+				url: "/Home/UpdateLastActivity",
+				data: { 'Id': @Model.account.Id},
+				type: 'GET',
+				success: function (result) {
+					//do the necessary updations
+				},
+				error: function (result) {
+				}
+			});
+		});
 	</script>
 }
 <!DOCTYPE html>
@@ -72,19 +87,19 @@
 					<div class="inside">
 						<div class="nav nav-tab menu">
 							<button class="btn"><img class="avatar-xl" src="/img/avatars/avatar-male-1.jpg" alt="avatar"></button>
-							<!--<a href="#members" data-toggle="tab"><i class="material-icons">account_circle</i></a> -->
+							<!-- <a href="#members" data-toggle="tab"><i class="material-icons">account_circle</i></a> -->
 							<a href="#discussions" data-toggle="tab" class="active"><i class="material-icons active">chat_bubble_outline</i></a>
 							<!-- <a href="#notifications" data-toggle="tab" class="f-grow1"><i class="material-icons">notifications_none</i></a> -->
 							<!-- <button class="btn mode"><i class="material-icons">brightness_2</i></button> -->
 							<!-- <a href="#settings" data-toggle="tab"><i class="material-icons">settings</i></a> -->
-							<a class="btn power" href="/Home/SignIn"><i class="material-icons">power_settings_new</i></a>
+							<a class="btn power" id="btnSignOut" href="/Home/SignOut?Id=@Model.account.Id"><i class="material-icons">power_settings_new</i></a>
 						</div>
 					</div>
 				</div>
 			</div>
 			<!-- End of Navigation -->
 			<!-- Start of Sidebar -->
-			<div class="sidebar" id="sidebar">
+			<div class="sidebar" id="sidebar" style="BACKGROUND-COLOR: LIGHTSKYBLUE;">
 				<div class="container">
 					<div class="col-md-12">	
 						<div class="tab-content">

@@ -30,27 +30,23 @@
 							</div>
 						</div>
 					</div>
-				</div> `;
+				</div>`;
 		}
         document.getElementById("sendToUser").addEventListener("click", function (event) {
-			var user = "test";
-			var receiverConnectionId = "@Model.accounts[0].ConnectionId";
-			console.log(receiverConnectionId);
-            var message = document.getElementById("messageInput").value;
-            connection.invoke("SendToUser", user, receiverConnectionId, message).catch(function (err) {
+			var message = document.getElementById("messageInput").value;
+			connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id ,message ).catch(function (err) {
                 return console.error(err.toString());
             });
             event.preventDefault();
 			sentMessage(message);
         });
         connection.on("ReceiveMessage", function (user, message) {
-			console.log(message);
 			recevedMessage(message);
         });
     </script>
 }
 <div class="chat" id="chat1">
-	<div class="top">
+	<div class="top" style="background-color:lightskyblue">
 		<div class="container">
 			<div class="col-md-12">
 				<div class="inside">
@@ -82,21 +78,7 @@
 	</div>
 	<div class="content" id="content">
 		<div id="msgContainer" class="container">
-			<!--
-				<div class="message">
-					<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-					<div class="text-main">
-						<div class="text-group">
-							<div class="text">
-								<p></p>
-							</div>
-						</div>
-						
-					</div>
-				</div>
-				
-				
-			-->
+			
 		</div>
 	</div>
 	<div class="container">
