@@ -33,6 +33,15 @@
 				},
 				success: function (data) {
 					$("#chat").html(data);
+					$.ajax({
+						url: "/Home/userOpenedChat",
+						method: "POST",
+						data: {
+							accountId: "@Model.account.Id",
+							friendId: Id
+						}
+					});
+
 				},
 				error: function (error) {
 				}
@@ -55,7 +64,7 @@
 				data: { 'Id': @Model.account.Id},
 				type: 'GET',
 				success: function (result) {
-					//do the necessary updations
+					
 				},
 				error: function (result) {
 				}

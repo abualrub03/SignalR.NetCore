@@ -60,7 +60,7 @@ namespace SignalR.Controllers
         {
             var dp = new SignalRProvider.AccountProvider();
             dp.spSignUpAccount(account);
-            return View("HomePage");
+            return SignIn();
         }
 		[Route("/")]
 		public IActionResult SignIn()
@@ -117,7 +117,14 @@ namespace SignalR.Controllers
             list.Add(ii);
 			a.account = i;
             a.accounts = list;
+			a.listMessages = new SignalRProvider.MessageProvider().ListAllChatMessage(accountId, friendId).OrderBy(x => x.messageDateTime).ToList();
 			return PartialView("_Chat",a);
+		}
+        
+        [HttpPost]
+        public void userOpenedChat(int accountId , int friendId)
+		{
+            var result = new SignalRProvider.MessageProvider().userOpenedChat(accountId, friendId);
 		}
     }
 }

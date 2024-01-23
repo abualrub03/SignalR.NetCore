@@ -17,6 +17,7 @@ namespace SignalR.Hubs
             ms.messageDateTime = DateTime.UtcNow;
             ms.messageContent = message;
             ms.messageStatus = "send";
+            var msResult = new SignalRProvider.MessageProvider().NewMessage(ms);
             var acc = new SignalRProvider.AccountProvider().returnAccountOnId(ms.messageRecieverId) ;
 			await Clients.Client(acc.ConnectionId).SendAsync("ReceiveMessage", ms.messageSenderId, ms.messageContent);
         }
