@@ -6,19 +6,21 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 @section scripts{
     <script type="text/javascript">
-		function recevedMessage(message) {
-			document.getElementById("msgContainer").innerHTML +=
-				`<div class="message">
-					<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-					<div class="text-main">
-						<div class="text-group">
-							<div class="text">
-								<p> ` + message +  ` </p>
+		function recevedMessage(user,message) {
+			if (@Model.accounts[0].Id == user) {
+				document.getElementById("msgContainer").innerHTML +=
+					`<div class="message">
+						<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+						<div class="text-main">
+							<div class="text-group">
+								<div class="text">
+									<p> ` + message +  ` </p>
+								</div>
 							</div>
-						</div>
 
-					</div>
-				</div>`;
+						</div>
+					</div>`;
+				}
 		}
 		function sentMessage(message) {
 			document.getElementById("msgContainer").innerHTML +=
@@ -32,6 +34,7 @@
 					</div>
 				</div>`;
 		}
+
         document.getElementById("sendToUser").addEventListener("click", function (event) {
 			var message = document.getElementById("messageInput").value;
 			connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id ,message ).catch(function (err) {
@@ -40,9 +43,7 @@
             event.preventDefault();
 			sentMessage(message);
         });
-        connection.on("ReceiveMessage", function (user, message) {
-			recevedMessage(message);
-        });
+        
     </script>
 }
 <div class="chat" id="chat1">

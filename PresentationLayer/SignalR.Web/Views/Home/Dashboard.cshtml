@@ -7,7 +7,6 @@
 @section scripts{
 	<script>
 		const signOutButton = document.getElementById('btnSignOut');
-		
 		var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 		connection.start().then(function () {
 			connection.invoke("GetConnectionId", @Model.account.Id.ToString()).then(function (id) {
@@ -21,10 +20,10 @@
 			$('#accounts').load('/Home/_Users?Id=@Model.account.Id');
 			setInterval(function () {
 				$('#accounts').load('/Home/_Users?Id=@Model.account.Id');
-			}, 0.10 * 60 * 1000); 
+			}, 0.10 * 60 * 1000);
 		});
 		function openChat(Id) {
-			console.log("Parameter received:", Id);
+			$('#chat').empty();
 			$.ajax({
 				url: "/Home/_Chat",
 				method: "POST",
@@ -61,6 +60,9 @@
 				error: function (result) {
 				}
 			});
+		});
+		connection.on("ReceiveMessage", function (user, message) {
+			recevedMessage(user,message);
 		});
 	</script>
 }
