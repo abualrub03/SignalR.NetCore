@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,16 @@ namespace SignalRProvider
 				new SqlParameter{ ParameterName = "@messageRecieverId", Value = friendId },
 			};
 			return DAL2.ExecuteReader<Entities.Message>("spListAllChatMessage");
+		}
+		public Message GetLastMessage(int senderId, int recieverId)
+		{
+
+			using var DAL2 = new DataAccess.DataAccessLayer();
+			DAL2.Parameters = new List<SqlParameter> {
+				new SqlParameter{ ParameterName = "@senderId", Value = senderId },
+				new SqlParameter{ ParameterName = "@recieverId", Value = recieverId },
+			};
+			return DAL2.ExecuteReader<Message>("spGetLastMessage").FirstOrDefault();
 		}
 	}
 }

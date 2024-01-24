@@ -19,7 +19,7 @@
 	<div class="discussions">
 		<h1>Discussions</h1>
 		<div class="list-group" id="chats" role="tablist">
-			@foreach (var item in Model.accounts)
+			@foreach (var item in Model.IIusers)
 			{
 				@if (item.Id != Model.account.Id)
 				{
@@ -39,16 +39,23 @@
 							</div>
 						}
 
-
-						<!-- <div class="new bg-yellow">
-							<span>+7</span>
-						</div> -->
+						@if(item.UnSeenMessages > 0)
+						{
+							<div class="new bg-yellow">
+								<span>+@item.UnSeenMessages </span>
+							</div>
+						}
+						
 						<div class="data">
 							<h5>@item.FullName</h5>
-							<!--
-							<span>Mon</span>
-							<p>A new feature has been updated to your account. Check it out...</p>
-							-->
+							@if (item.LastMessage != null)
+							{
+								<span>@item.LastMessageDateTime</span>
+								<p>@item.LastMessage</p>
+								
+							}
+							
+							
 						</div>
 					</a>
 

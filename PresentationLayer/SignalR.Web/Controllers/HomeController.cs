@@ -1,9 +1,11 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Plugins;
 using SignalR.Hubs;
 using System;
 using System.Data;
 using System.Diagnostics;
+using ViewModel;
 namespace SignalR.Controllers
 {
     public class HomeController : Controller
@@ -46,10 +48,31 @@ namespace SignalR.Controllers
 		{
             Account dp = new Account();
             dp.Id = Id;
-			var a = new SignalRProvider.AccountProvider().spListAllAccounts();
 			var vm = new ViewModel.HomePageViewModel();
 			vm.account = dp;
-			vm.accounts = a;
+            vm.users = new SignalRProvider.AccountProvider().ListAccountsAndUnSeenMessages(Id);
+            vm.IIusers = new List<iiUserViewModel>();
+            foreach(var i in vm.users)
+            {
+                var iuser = new iiUserViewModel();
+                iuser.Id = i.Id;
+                iuser.PhoneNumber = i.PhoneNumber;
+                iuser.UserName = i.UserName;
+                iuser.Email = i.Email;
+                iuser.Password = i.Password;
+                iuser.FullName = i.FullName;
+                iuser.ConnectionId = i.ConnectionId;
+                iuser.IsActive = i.IsActive;
+				iuser.UnSeenMessages = i.UnSeenMessages;
+				var m = new SignalRProvider.MessageProvider().GetLastMessage(senderId: i.Id, recieverId: Id);
+                if (m != null)
+                {
+                    iuser.LastMessage = m.messageContent;
+                    iuser.LastMessageDateTime = m.messageDateTime;
+                }
+                vm.IIusers.Add(iuser);
+            }
+
 			return PartialView("_Users", vm);
 		}
         public IActionResult SignUp()

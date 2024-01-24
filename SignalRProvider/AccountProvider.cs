@@ -64,18 +64,25 @@ namespace SignalRProvider
 
         public List<Entities.Account> spListAllAccounts()
         {
-
             using var DAL2 = new DataAccess.DataAccessLayer();
             DAL2.Parameters = new List<SqlParameter> {};
             return DAL2.ExecuteReader<Entities.Account>("spListAllOnlineAccounts");
+        }
+        
+        public List<ViewModel.UsersViewModel> ListAccountsAndUnSeenMessages(int Id )
+        {
+            using var DAL2 = new DataAccess.DataAccessLayer();
+            DAL2.Parameters = new List<SqlParameter> {
+			 new SqlParameter{ ParameterName = "@Id", Value =  Id }
+            };
+            return DAL2.ExecuteReader<ViewModel.UsersViewModel>("spListAccountsAndUnSeenMessages");
         }
 
         public bool UpdateLastActivity(int Id)
         {
             using var DAL = new DataAccess.DataAccessLayer();
-            DAL.Parameters = new List<SqlParameter> {
+            DAL.Parameters = new List<SqlParameter>{
                 new SqlParameter{ ParameterName = "@Id", Value =  Id },
-
             };
             return DAL.ExecuteNonQuery("UpdateLastActivity");
         }
