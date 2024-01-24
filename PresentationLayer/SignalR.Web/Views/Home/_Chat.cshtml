@@ -7,7 +7,41 @@
 
 @section scripts{
     <script type="text/javascript">
+		setInterval(function () {
+			$.ajax({
+				url: "/Home/CheckActivity",
+				method: "POST",
+				data: {
+					Id: "@Model.accounts[0].Id"	,
+				},
+				success: function (data) {
+					console.log(data);
+					
+					if ( data == 1) {
+						console.log("1");
+						document.getElementById("statusChat").innerHTML =
+							`<i class="material-icons online">fiber_manual_record</i>`;
+						document.getElementById("ActiveInActive").innerHTML =
+							`<span>Active Now</span>`;
 
+						console.log("1");
+					} else {
+						console.log("0");
+						document.getElementById("statusChat").innerHTML =
+							`<i class="material-icons offline">fiber_manual_record</i>`;
+						document.getElementById("ActiveInActive").innerHTML =
+							`<span>Inactive</span>`;
+						console.log("0");
+					}
+					
+				
+				},
+				error: function (error) {
+					consoe.log("error");
+				}
+			});
+			console.log("enterval");
+		}, 0.1 * 60 * 1000);
 		function recevedMessage(user,message) {
 			if (@Model.accounts[0].Id == user) {
 				document.getElementById("msgContainer").innerHTML +=
@@ -54,12 +88,30 @@
 			<div class="col-md-12">
 				<div class="inside">
 					<a href="#"><img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
-					<!--<div class="status">
-						<i class="material-icons online">fiber_manual_record</i>
-					</div>-->
+					<div class="status" id="statusChat">
+						@if(Model.accounts[0].IsActive == 1)
+						{
+							<i class="material-icons online">fiber_manual_record</i>
+
+						}
+						else
+						{
+							<i class="material-icons offline">fiber_manual_record</i>
+						}
+					</div>
 					<div class="data">
 						<h5><a href="#">@Model.accounts[0].FullName</a></h5>
-						<!--<span>Active now</span>-->
+						<span id="ActiveInActive">
+						@if (Model.accounts[0].IsActive == 1)
+						{
+							<span>Active now</span>
+						}
+						else
+						{
+							<span>Inactive</span>
+							}
+						</span>
+						
 					</div>
 					<!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
 					<button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>

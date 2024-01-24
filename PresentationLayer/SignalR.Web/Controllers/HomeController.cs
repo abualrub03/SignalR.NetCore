@@ -8,16 +8,17 @@ namespace SignalR.Controllers
 {
     public class HomeController : Controller
     {
-        public bool CheckActivity (int Id)
+        [HttpPost]
+        public int CheckActivity (int Id)
         {
             var result = new SignalRProvider.AccountProvider().CheckActivity (Id);
             if(result.IsActive == 1)
             {
-				return true;
+				return 1;
             }
             else
             {
-                return false;
+                return 0;
             }
 		}
 
