@@ -44,7 +44,7 @@ namespace SignalR.Controllers
             return View("DashBoard",vm);
         }
         [HttpGet]
-        public IActionResult _Users(int Id)
+        public IActionResult _Users(int Id,string filterMode)
 		{
             Account dp = new Account();
             dp.Id = Id;
@@ -72,7 +72,32 @@ namespace SignalR.Controllers
                 }
                 vm.IIusers.Add(iuser);
             }
+            if(filterMode == "FilterReadOnly")
+            {
+				var temp = new List<iiUserViewModel>();
+				foreach (var i in vm.IIusers)
+                {
+                    if(i.UnSeenMessages <= 0 ) {
+						temp.Add(i);
+					}
+                }
+				vm.IIusers = temp;
 
+			}
+			else if(filterMode == "FilterUnreadOnly")
+            {
+				var temp = new List<iiUserViewModel>();
+
+				foreach (var i in vm.IIusers)
+				{
+					if (i.UnSeenMessages > 0)
+					{
+						temp.Add(i);
+					}
+				}
+				vm.IIusers = temp;
+
+			}
 			return PartialView("_Users", vm);
 		}
         public IActionResult SignUp()

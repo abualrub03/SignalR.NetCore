@@ -2,53 +2,51 @@
 @{
     ViewData["Title"] = "_Users";
 }
-
-
-	<div class="discussions">
-		<h1>Discussions</h1>
-		<div class="list-group" id="chats" role="tablist">
-			@foreach (var item in Model.IIusers)
+<div class="discussions">
+	<h1>Discussions</h1>
+	<div class="list-group" id="chats" role="tablist">
+		@foreach (var item in Model.IIusers)
+		{
+			@if (item.Id != Model.account.Id)
 			{
-				@if (item.Id != Model.account.Id)
-				{
 
-					<a href="#list-chat" class="filterDiscussions all unread single " id="list-chat-list" data-toggle="list" role="tab" onclick="openChat('@item.Id')">
-						<img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
-						@if (item.IsActive == 1 )
-						{
-							<div class="status">
-								<i class="material-icons online">fiber_manual_record</i>
-							</div>
-						}
-						else
-						{
-							<div class="status">
-								<i class="material-icons offline">fiber_manual_record</i>
-							</div>
-						}
+				<a href="#list-chat" class="filterDiscussions all unread single " id="list-chat-list" data-toggle="list" role="tab" onclick="openChat('@item.Id')">
+					<img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+					@if (item.IsActive == 1 )
+					{
+						<div class="status">
+							<i class="material-icons online">fiber_manual_record</i>
+						</div>
+					}
+					else
+					{
+						<div class="status">
+							<i class="material-icons offline">fiber_manual_record</i>
+						</div>
+					}
 
-						@if(item.UnSeenMessages > 0)
+					@if(item.UnSeenMessages > 0)
+					{
+						<div class="new bg-yellow">
+							<span>+@item.UnSeenMessages </span>
+						</div>
+					}
+					
+					<div class="data">
+						<h5>@item.FullName</h5>
+						@if (item.LastMessage != null)
 						{
-							<div class="new bg-yellow">
-								<span>+@item.UnSeenMessages </span>
-							</div>
+							<span>@item.LastMessageDateTime</span>
+							<p>@item.LastMessage</p>
+							
 						}
 						
-						<div class="data">
-							<h5>@item.FullName</h5>
-							@if (item.LastMessage != null)
-							{
-								<span>@item.LastMessageDateTime</span>
-								<p>@item.LastMessage</p>
-								
-							}
-							
-							
-						</div>
-					</a>
+						
+					</div>
+				</a>
 
 
-				}
 			}
-		</div>
+		}
 	</div>
+</div>

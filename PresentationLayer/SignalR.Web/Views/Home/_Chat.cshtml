@@ -82,99 +82,133 @@
         
     </script>
 }
-<div class="chat" id="chat1">
-	<div class="top" style="background-color:lightskyblue">
-		<div class="container">
-			<div class="col-md-12">
-				<div class="inside">
-					<a href="#"><img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
-					<div class="status" id="statusChat">
-						@if(Model.accounts[0].IsActive == 1)
-						{
-							<i class="material-icons online">fiber_manual_record</i>
+<div class="tab-content" id="nav-tabContent">
+	<!-- Start of Babble -->
+	<div class="babble tab-pane fade active show" id="list-chat" role="tabpanel" aria-labelledby="list-chat-list">
+		<!-- Start of Chat -->
+		<div class="chat" id="chat1">
+			<div class="top">
+				<div class="container">
+					<div class="col-md-12">
+						<div class="inside">
+							<a href="#"><img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+							<div class="status" id="statusChat">
+								@if (Model.accounts[0].IsActive == 1)
+								{
+									<i class="material-icons online">fiber_manual_record</i>
 
+								}
+								else
+								{
+									<i class="material-icons offline">fiber_manual_record</i>
+								}
+							</div>
+							<div class="data">
+								<h5><a href="#">@Model.accounts[0].FullName</a></h5>
+								<span id="ActiveInActive">
+									@if (Model.accounts[0].IsActive == 1)
+									{
+										<span>Active now</span>
+									}
+									else
+									{
+										<span>Inactive</span>
+									}
+								</span>
+
+							</div>
+							<!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
+							<button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>
+							<button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
+							<div class="dropdown">
+								<button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
+								<div class="dropdown-menu dropdown-menu-right">
+									<button class="dropdown-item connect" name="1"><i class="material-icons">phone_in_talk</i>Voice Call</button>
+									<button class="dropdown-item connect" name="1"><i class="material-icons">videocam</i>Video Call</button>
+									<hr>
+									<button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
+									<button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
+									<button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="content" id="content">
+				<div id="msgContainer" class="container">
+					@foreach (var i in Model.listMessages)
+					{
+						if (i.messageSenderId == Model.account.Id)
+						{
+							<div class="message me">
+								<div class="text-main">
+									<div class="text-group me">
+										<div class="text me">
+											<p> @i.messageContent </p>
+										</div>
+
+									</div>
+									<span>@i.messageDateTime</span>
+								</div>
+							</div>
 						}
 						else
 						{
-							<i class="material-icons offline">fiber_manual_record</i>
+							<div class="message">
+								<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+								<div class="text-main">
+									<div class="text-group">
+										<div class="text">
+											<p> @i.messageContent </p>
+										</div>
+
+									</div>
+									<span>@i.messageDateTime</span>
+								</div>
+							</div>
 						}
-					</div>
-					<div class="data">
-						<h5><a href="#">@Model.accounts[0].FullName</a></h5>
-						<span id="ActiveInActive">
-						@if (Model.accounts[0].IsActive == 1)
-						{
-							<span>Active now</span>
-						}
-						else
-						{
-							<span>Inactive</span>
-							}
-						</span>
-						
-					</div>
-					<!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
-					<button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>
-					<button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
-					<div class="dropdown">
-						<button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
-						<div class="dropdown-menu dropdown-menu-right">
-							<button class="dropdown-item connect" name="1"><i class="material-icons">phone_in_talk</i>Voice Call</button>
-							<button class="dropdown-item connect" name="1"><i class="material-icons">videocam</i>Video Call</button>
-							<hr>
-							<button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
-							<button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
-							<button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
+					}
+				</div>
+			</div>
+			<div class="container">
+				<div class="col-md-12">
+					<div class="bottom">
+						<div class="position-relative w-100">
+							<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"></textarea>
+							<button type="button" id="sendToUser" class="btn send"><i class="material-icons">send</i></button>
 						</div>
-					</div>-->
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="content" id="content">
-		<div id="msgContainer" class="container">
-			@foreach(var i in Model.listMessages)
-			{
-				if(i.messageSenderId == Model.account.Id)
-				{
-					<div class="message me">
-						<div class="text-main">
-							<div class="text-group me">
-								<div class="text me">
-									<p> @i.messageContent </p>
+		<!-- End of Chat -->
+		<!-- Start of Call -->
+		<div class="call" id="call1">
+			<div class="content">
+				<div class="container">
+					<div class="col-md-12">
+						<div class="inside">
+							<div class="panel">
+								<div class="participant">
+									<img class="avatar-xxl" src="/img/avatars/avatar-female-5.jpg" alt="avatar">
+									<span>Connecting</span>
 								</div>
-								
+								<div class="options">
+									<button class="btn option"><i class="material-icons md-30">mic</i></button>
+									<button class="btn option"><i class="material-icons md-30">videocam</i></button>
+									<button class="btn option call-end"><i class="material-icons md-30">call_end</i></button>
+									<button class="btn option"><i class="material-icons md-30">person_add</i></button>
+									<button class="btn option"><i class="material-icons md-30">volume_up</i></button>
+								</div>
+								<button class="btn back" name="1"><i class="material-icons md-24">chat</i></button>
 							</div>
-							<span>@i.messageDateTime</span>
 						</div>
 					</div>
-				}
-				else
-				{
-					<div class="message">
-						<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-						<div class="text-main">
-							<div class="text-group">
-								<div class="text">
-									<p> @i.messageContent </p>
-								</div>
-								
-							</div>
-							<span>@i.messageDateTime</span>
-						</div>
-					</div>
-				}
-			}
-		</div>
-	</div>
-	<div class="container">
-		<div class="col-md-12">
-			<div class="bottom">
-				<div class="position-relative w-100">
-					<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"></textarea>
-					<button type="button" id="sendToUser" class="btn send"><i class="material-icons">send</i></button>
 				</div>
 			</div>
 		</div>
+		<!-- End of Call -->
 	</div>
-</div>
+	<!-- End of Babble -->
+
