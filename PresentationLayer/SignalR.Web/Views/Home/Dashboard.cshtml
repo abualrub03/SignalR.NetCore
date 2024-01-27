@@ -20,7 +20,7 @@
 			$('#accounts').load('/Home/_Users?Id=@Model.account.Id');
 			setInterval(function () {
 				$('#accounts').load('/Home/_Users?Id=@Model.account.Id');
-			}, 0.010 * 60 * 1000);
+			},60000);
 		});
 		function openChat(Id) {
 			$('#chat').empty();
@@ -253,7 +253,23 @@
 							</div>
 							<!-- End of Contacts -->
 							<!-- Start of Discussions -->
-							<div id="accounts"></div>
+							<div id="discussions" class="tab-pane fade active show">
+								<div class="search">
+									<form class="form-inline position-relative">
+										<input type="search" class="form-control" id="conversations" placeholder="Search for conversations...">
+										<button type="button" class="btn btn-link loop"><i class="material-icons">search</i></button>
+									</form>
+								</div>
+								<div class="list-group sort">
+									<button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">All</button>
+									<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="read">Read</button>
+									<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Unread</button>
+								</div>
+								<div id="accounts">
+
+								</div>
+							</div>
+
 							<!-- End of Discussions -->
 							<!-- Start of Notifications -->
 							<div id="notifications" class="tab-pane fade">
