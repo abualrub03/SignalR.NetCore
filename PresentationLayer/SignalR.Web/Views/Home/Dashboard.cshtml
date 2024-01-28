@@ -6,22 +6,43 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 @section scripts{
 	<script>
+		
+		var SearchFlag = 0;
+		$(document).ready(function () {
+			$("#conversations").keyup(function () {
+				const inputText = $(this).val();
+				console.log(inputText);
+				$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode + '&SearchStr=' + inputText);
+				SearchFlag = 1;
+			});
+		});
+		
 		var strFilterMode = "FilterAll";
 		window.addEventListener('scroll', function () {
 			window.scrollTo(0, 0);
 		});	
 		document.getElementById("FilterAll").addEventListener("click", function () {
 			console.log("Button was clicked!");
+			document.getElementById("conversations").value = "";
+			SearchFlag = 0;
 			strFilterMode = "FilterAll";
 			
 		});
 		document.getElementById("FilterReadOnly").addEventListener("click", function () {
 			console.log("Button was clicked!");
+			SearchFlag = 0;
+
+			document.getElementById("conversations").value = "";
+
 			strFilterMode = "FilterReadOnly";
 
 		});
 		document.getElementById("FilterUnreadOnly").addEventListener("click", function () {
 			console.log("Button was clicked!");
+			SearchFlag = 0;
+
+			document.getElementById("conversations").value = "";
+
 			strFilterMode = "FilterUnreadOnly";
 		});
 
@@ -38,7 +59,10 @@
 		$(document).ready(function () {
 			$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode );
 			setInterval(function () {
-				$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode);
+				window.scrollTo(0, 0);
+				if (SearchFlag != 1 || $('#conversations').val() == ''){
+					$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode);
+				}
 			},1000);
 		});
 		function openChat(Id) {
@@ -1029,8 +1053,7 @@
 		<script src="/js/swipe.min.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
 		<script>
-			function scrollToBottom(el) { el.scrollTop = el.scrollHeight; }
-			scrollToBottom(document.getElementById('content'));
+			// scrollToBottom(document.getElementById('content'));
 		</script>
 	</body>
 

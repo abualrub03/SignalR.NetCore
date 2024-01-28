@@ -77,6 +77,15 @@ namespace SignalRProvider
             };
             return DAL2.ExecuteReader<ViewModel.UsersViewModel>("spListAccountsAndUnSeenMessages");
         }
+        public List<ViewModel.UsersViewModel> ListAccountsAndUnSeenMessagesWithSearchStr(int Id,string SearchStr )
+        {
+            using var DAL2 = new DataAccess.DataAccessLayer();
+            DAL2.Parameters = new List<SqlParameter> {
+			 new SqlParameter{ ParameterName = "@Id", Value =  Id },
+			 new SqlParameter{ ParameterName = "@SearchStr", Value =  SearchStr }
+			};
+            return DAL2.ExecuteReader<ViewModel.UsersViewModel>("spListAccountsAndUnSeenMessagesWithSearchStr");
+        }
 
         public bool UpdateLastActivity(int Id)
         {

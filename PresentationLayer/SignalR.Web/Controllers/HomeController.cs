@@ -44,14 +44,22 @@ namespace SignalR.Controllers
             return View("DashBoard",vm);
         }
         [HttpGet]
-        public IActionResult _Users(int Id,string filterMode)
+        public IActionResult _Users(int Id,string filterMode,string SearchStr)
 		{
             Account dp = new Account();
             dp.Id = Id;
 			var vm = new ViewModel.HomePageViewModel();
 			vm.account = dp;
-            vm.users = new SignalRProvider.AccountProvider().ListAccountsAndUnSeenMessages(Id);
-            vm.IIusers = new List<iiUserViewModel>();
+            if(SearchStr == null)
+            {
+				vm.users = new SignalRProvider.AccountProvider().ListAccountsAndUnSeenMessages(Id);
+            }
+            else
+            {
+				vm.users = new SignalRProvider.AccountProvider().ListAccountsAndUnSeenMessagesWithSearchStr(Id, SearchStr);
+
+			}
+			vm.IIusers = new List<iiUserViewModel>();
             foreach(var i in vm.users)
             {
                 var iuser = new iiUserViewModel();

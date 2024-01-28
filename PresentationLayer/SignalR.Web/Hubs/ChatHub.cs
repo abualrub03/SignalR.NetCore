@@ -21,7 +21,14 @@ namespace SignalR.Hubs
             var acc = new SignalRProvider.AccountProvider().returnAccountOnId(ms.messageRecieverId) ;
 			await Clients.Client(acc.ConnectionId).SendAsync("ReceiveMessage", ms.messageSenderId, ms.messageContent);
         }
-        public string GetConnectionId(int Id) {
+        public async Task SendToUserImg(int senderId, int receiverId, IFormFile files)
+        {
+
+
+			var acc = new SignalRProvider.AccountProvider().returnAccountOnId(2);
+			await Clients.Client(acc.ConnectionId).SendAsync("ReceiveMessage", 1, "dsf");
+		}
+		public string GetConnectionId(int Id) {
             var conID = Context.ConnectionId;
             return conID;
         }

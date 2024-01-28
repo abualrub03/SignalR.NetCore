@@ -4,9 +4,25 @@
     Layout = "_DashboardLayout";
 }
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-
 @section scripts{
     <script type="text/javascript">
+		$(function () {
+			$("#msgContainer")[0].scrollIntoView(false)
+		});
+		$("#messageInput").keydown(function (event) {
+			if (event.key === "Enter") {
+				var message = $(this).val();
+				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , message).catch(function (err) {
+					return console.error(err.toString());
+				});
+				event.preventDefault();
+				sentMessage(message);
+				$("#msgContainer")[0].scrollIntoView(false)
+
+				$(this).val("");
+				
+			}
+		});
 		setInterval(function () {
 			$.ajax({
 				url: "/Home/CheckActivity",
@@ -16,14 +32,12 @@
 				},
 				success: function (data) {
 					console.log(data);
-					
 					if ( data == 1) {
 						console.log("1");
 						document.getElementById("statusChat").innerHTML =
 							`<i class="material-icons online">fiber_manual_record</i>`;
 						document.getElementById("ActiveInActive").innerHTML =
 							`<span>Active Now</span>`;
-
 						console.log("1");
 					} else {
 						console.log("0");
@@ -32,9 +46,7 @@
 						document.getElementById("ActiveInActive").innerHTML =
 							`<span>Inactive</span>`;
 						console.log("0");
-					}
-					
-				
+					}				
 				},
 				error: function (error) {
 					consoe.log("error");
@@ -53,10 +65,9 @@
 									<p> ` + message +  ` </p>
 								</div>
 							</div>
-
 						</div>
 					</div>`;
-				}
+			}
 		}
 		function sentMessage(message) {
 			document.getElementById("msgContainer").innerHTML +=
@@ -78,6 +89,8 @@
             });
             event.preventDefault();
 			sentMessage(message);
+			$("#msgContainer")[0].scrollIntoView(false)
+
         });
         
     </script>
@@ -117,20 +130,9 @@
 								</span>
 
 							</div>
-							<!-- <button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-30">phone_in_talk</i></button>
-							<button class="btn connect d-md-block d-none" name="1"><i class="material-icons md-36">videocam</i></button>
-							<button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
 							<div class="dropdown">
 								<button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
-								<div class="dropdown-menu dropdown-menu-right">
-									<button class="dropdown-item connect" name="1"><i class="material-icons">phone_in_talk</i>Voice Call</button>
-									<button class="dropdown-item connect" name="1"><i class="material-icons">videocam</i>Video Call</button>
-									<hr>
-									<button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
-									<button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
-									<button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
-								</div>
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
@@ -169,6 +171,7 @@
 							</div>
 						}
 					}
+					<div  id="scrollToMe"></div>
 				</div>
 			</div>
 			<div class="container">
@@ -177,7 +180,12 @@
 						<div class="position-relative w-100">
 							<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"></textarea>
 							<button type="button" id="sendToUser" class="btn send"><i class="material-icons">send</i></button>
+
 						</div>
+						<label>
+							<input type="file" id="myFileInput">
+							<span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
+						</label>
 					</div>
 				</div>
 			</div>
@@ -202,6 +210,7 @@
 									<button class="btn option"><i class="material-icons md-30">volume_up</i></button>
 								</div>
 								<button class="btn back" name="1"><i class="material-icons md-24">chat</i></button>
+
 							</div>
 						</div>
 					</div>
@@ -211,4 +220,3 @@
 		<!-- End of Call -->
 	</div>
 	<!-- End of Babble -->
-
