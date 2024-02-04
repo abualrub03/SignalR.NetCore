@@ -12,15 +12,13 @@
 		$("#messageInput").keydown(function (event) {
 			if (event.key === "Enter") {
 				var message = $(this).val();
-				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , message).catch(function (err) {
+				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , message ,'text').catch(function (err) {
 					return console.error(err.toString());
 				});
 				event.preventDefault();
 				sentMessage(message);
 				$("#msgContainer")[0].scrollIntoView(false)
-
 				$(this).val("");
-				
 			}
 		});
 		setInterval(function () {
@@ -31,28 +29,22 @@
 					Id: "@Model.accounts[0].Id"	,
 				},
 				success: function (data) {
-					console.log(data);
 					if ( data == 1) {
-						console.log("1");
 						document.getElementById("statusChat").innerHTML =
 							`<i class="material-icons online">fiber_manual_record</i>`;
 						document.getElementById("ActiveInActive").innerHTML =
 							`<span>Active Now</span>`;
-						console.log("1");
 					} else {
-						console.log("0");
 						document.getElementById("statusChat").innerHTML =
 							`<i class="material-icons offline">fiber_manual_record</i>`;
 						document.getElementById("ActiveInActive").innerHTML =
 							`<span>Inactive</span>`;
-						console.log("0");
 					}				
 				},
 				error: function (error) {
 					consoe.log("error");
 				}
 			});
-			console.log("enterval");
 		}, 0.1 * 60 * 1000);
 		function recevedMessage(user,message) {
 			if (@Model.accounts[0].Id == user) {
@@ -67,6 +59,7 @@
 							</div>
 						</div>
 					</div>`;
+				$("#msgContainer")[0].scrollIntoView(false)
 			}
 		}
 		function sentMessage(message) {
@@ -80,20 +73,79 @@
 						</div>
 					</div>
 				</div>`;
-		}
+			$("#msgContainer")[0].scrollIntoView(false)
 
+		}
+		function recevedImage(user, message) {
+			if (@Model.accounts[0].Id == user) {
+				document.getElementById("msgContainer").innerHTML +=
+					`<div class="message">
+											<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+											<div class="text-main">
+												<div class="text-group">
+													<div class="text">
+														<div class="chat-message chat-message-image">
+																			<img src="`+message+`" style="width: 300px" alt="Image description">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>`;
+				$("#msgContainer")[0].scrollIntoView(false)
+			}
+		}
+        function sentImage(path) {
+			document.getElementById("msgContainer").innerHTML +=
+				`<div class="message me">
+					<div class="text-main">
+						<div class="text-group me">
+							<div class="text me">
+								<div class="chat-message chat-message-image">
+									<img src="`+ path + `" style="width:300px" alt="Image description">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`;
+			$("#msgContainer")[0].scrollIntoView(false)
+		}
         document.getElementById("sendToUser").addEventListener("click", function (event) {
 			var message = document.getElementById("messageInput").value;
-			connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id ,message ).catch(function (err) {
+			connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id ,message , 'text' ).catch(function (err) {
                 return console.error(err.toString());
             });
             event.preventDefault();
 			sentMessage(message);
 			$("#msgContainer")[0].scrollIntoView(false)
-
         });
-        
-    </script>
+		/////////////////////////////////////////////////////////////////////////////////
+		$('#imageUpload').change(function () {
+			var file = this.files[0];
+			var formData = new FormData();
+			formData.append('image', file);
+			formData.append('senderId', '@Model.account.Id');
+			formData.append('recieverId', '@Model.accounts[0].Id');
+			$.ajax({
+				url: '/Home/UploadImage',
+				type: 'POST',
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function (path) {
+					sentImage(path);
+					connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , path  , 'image').catch(function (err) {
+						return console.error(err.toString());
+					});
+					
+
+
+				},
+				error: function (error) {
+					// 
+				}
+			});
+		});
+	</script>
 }
 <div class="tab-content" id="nav-tabContent">
 	<!-- Start of Babble -->
@@ -101,6 +153,7 @@
 		<!-- Start of Chat -->
 		<div class="chat" id="chat1">
 			<div class="top">
+				
 				<div class="container">
 					<div class="col-md-12">
 						<div class="inside">
@@ -109,7 +162,6 @@
 								@if (Model.accounts[0].IsActive == 1)
 								{
 									<i class="material-icons online">fiber_manual_record</i>
-
 								}
 								else
 								{
@@ -128,7 +180,6 @@
 										<span>Inactive</span>
 									}
 								</span>
-
 							</div>
 							<div class="dropdown">
 								<button class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons md-30">more_vert</i></button>
@@ -140,36 +191,75 @@
 			<div class="content" id="content">
 				<div id="msgContainer" class="container">
 					@foreach (var i in Model.listMessages)
-					{
-						if (i.messageSenderId == Model.account.Id)
+					{	
+						if(i.messageType != "text")
 						{
-							<div class="message me">
-								<div class="text-main">
-									<div class="text-group me">
-										<div class="text me">
-											<p> @i.messageContent </p>
+							if (i.messageSenderId == Model.account.Id)
+							{
+								<div class="message me">
+									<div class="text-main">
+										<div class="text-group me">
+											<div class="text me">
+												<div class="chat-message chat-message-image">
+													<img src="@i.messagePathIfExist" style="width:300px" alt="Image description">
+												</div>
+											</div>
 										</div>
-
 									</div>
-									<span>@i.messageDateTime</span>
 								</div>
-							</div>
+
+								
+							}
+							else
+							{
+								<div class="message">
+									<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+									<div class="text-main">
+										<div class="text-group">
+											<div class="text">
+												<div class="chat-message chat-message-image">
+													<img src="@i.messagePathIfExist" style="width:300px" alt="Image description">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							}
+	
 						}
 						else
 						{
-							<div class="message">
-								<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-								<div class="text-main">
-									<div class="text-group">
-										<div class="text">
-											<p> @i.messageContent </p>
-										</div>
+							if (i.messageSenderId == Model.account.Id)
+							{
+								<div class="message me">
+									<div class="text-main">
+										<div class="text-group me">
+											<div class="text me">
+												<p> @i.messageContent </p>
+											</div>
 
+										</div>
+										<span>@i.messageDateTime</span>
 									</div>
-									<span>@i.messageDateTime</span>
 								</div>
-							</div>
+							}
+							else
+							{
+								<div class="message">
+									<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+									<div class="text-main">
+										<div class="text-group">
+											<div class="text">
+												<p> @i.messageContent </p>
+											</div>
+
+										</div>
+										<span>@i.messageDateTime</span>
+									</div>
+								</div>
+							}
 						}
+						
 					}
 					<div  id="scrollToMe"></div>
 				</div>
@@ -183,7 +273,7 @@
 
 						</div>
 						<label>
-							<input type="file" id="myFileInput">
+							<input type="file" type="file" id="imageUpload" accept="image/*" >
 							<span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
 						</label>
 					</div>
@@ -219,4 +309,5 @@
 		</div>
 		<!-- End of Call -->
 	</div>
-	<!-- End of Babble -->
+	<!-- End of Babble -->	
+</div>

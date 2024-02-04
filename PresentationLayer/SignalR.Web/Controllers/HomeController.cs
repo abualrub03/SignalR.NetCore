@@ -1,5 +1,7 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Hosting;
 using NuGet.Protocol.Plugins;
 using SignalR.Hubs;
 using System;
@@ -10,7 +12,12 @@ namespace SignalR.Controllers
 {
     public class HomeController : Controller
     {
-        [HttpPost]
+        private IWebHostEnvironment _environment;
+		public HomeController(IWebHostEnvironment environment)
+		{
+			_environment = environment;
+		}
+		[HttpPost]
         public int CheckActivity (int Id)
         {
             var result = new SignalRProvider.AccountProvider().CheckActivity (Id);
@@ -79,7 +86,8 @@ namespace SignalR.Controllers
                     iuser.LastMessageDateTime = m.messageDateTime;
                 }
                 vm.IIusers.Add(iuser);
-            }
+                vm.IIusers = vm.IIusers.OrderByDescending(x => x.LastMessageDateTime).ToList();
+			}
             if(filterMode == "FilterReadOnly")
             {
 				var temp = new List<iiUserViewModel>();
@@ -89,7 +97,7 @@ namespace SignalR.Controllers
 						temp.Add(i);
 					}
                 }
-				vm.IIusers = temp;
+				vm.IIusers = temp.OrderByDescending(x => x.LastMessageDateTime).ToList();
 
 			}
 			else if(filterMode == "FilterUnreadOnly")
@@ -103,7 +111,7 @@ namespace SignalR.Controllers
 						temp.Add(i);
 					}
 				}
-				vm.IIusers = temp;
+				vm.IIusers = temp.OrderByDescending(x => x.LastMessageDateTime).ToList();
 
 			}
 			return PartialView("_Users", vm);
@@ -141,7 +149,34 @@ namespace SignalR.Controllers
                 return SignIn();
             }
         }
-       
+
+		[HttpPost]
+		public string UploadImage(IFormFile image , int senderId , int recieverId)
+		    {
+			string extension = Path.GetExtension(image.FileName);
+			string imageName = Guid.NewGuid().ToString() + extension;
+            var pathToReturn = Path.Combine("/Document/SignalR", imageName); 
+			var path = Path.Combine(_environment.WebRootPath, "Document/SignalR", imageName);
+
+			using (var fileStream = new FileStream(path, FileMode.Create))
+			{
+				image.CopyTo(fileStream);
+			}
+            SignalRProvider.MessageProvider messageProvider = new SignalRProvider.MessageProvider(); 
+            Entities.Message ms = new Entities.Message();
+            ms.messageContent = imageName;
+            ms.messagePathIfExist = pathToReturn;
+			ms.messageDateTime = DateTime.UtcNow;
+			ms.messageStatus = "send";
+			ms.messageType = "img";
+			ms.messageSenderId= senderId;
+            ms.messageRecieverId = recieverId;
+            messageProvider.NewMessage(ms);
+            return pathToReturn;
+		}
+
+
+
 		[HttpGet]
         public IActionResult SignOut(int Id)
         {

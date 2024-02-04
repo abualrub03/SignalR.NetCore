@@ -11,25 +11,21 @@
 		$(document).ready(function () {
 			$("#conversations").keyup(function () {
 				const inputText = $(this).val();
-				console.log(inputText);
 				$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode + '&SearchStr=' + inputText);
 				SearchFlag = 1;
 			});
 		});
 		
 		var strFilterMode = "FilterAll";
-		window.addEventListener('scroll', function () {
-			window.scrollTo(0, 0);
-		});	
+		
+		
 		document.getElementById("FilterAll").addEventListener("click", function () {
-			console.log("Button was clicked!");
 			document.getElementById("conversations").value = "";
 			SearchFlag = 0;
 			strFilterMode = "FilterAll";
 			
 		});
 		document.getElementById("FilterReadOnly").addEventListener("click", function () {
-			console.log("Button was clicked!");
 			SearchFlag = 0;
 
 			document.getElementById("conversations").value = "";
@@ -38,7 +34,6 @@
 
 		});
 		document.getElementById("FilterUnreadOnly").addEventListener("click", function () {
-			console.log("Button was clicked!");
 			SearchFlag = 0;
 
 			document.getElementById("conversations").value = "";
@@ -50,7 +45,6 @@
 		var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 		connection.start().then(function () {
 			connection.invoke("GetConnectionId", @Model.account.Id.ToString()).then(function (id) {
-				console.log(id);
 				sendConIdAndId( id , @Model.account.Id )
 			});
 		}).catch(function (err) {
@@ -59,7 +53,6 @@
 		$(document).ready(function () {
 			$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode );
 			setInterval(function () {
-				window.scrollTo(0, 0);
 				if (SearchFlag != 1 || $('#conversations').val() == ''){
 					$('#accounts').load('/Home/_Users?Id=@Model.account.Id&filterMode=' + strFilterMode);
 				}
@@ -91,7 +84,7 @@
 			});
 		}
 		function sendConIdAndId( id,Id) {
-			$.ajax({
+			$.ajax({		
 				url: "/Home/SetConId",
 				method: "POST",
 				data: {
@@ -101,7 +94,6 @@
 			});
 		}
 		document.addEventListener("keydown", function (event) {
-			console.log("You pressed:", event.key);
 			$.ajax({
 				url: "/Home/UpdateLastActivity",
 				data: { 'Id': @Model.account.Id},
@@ -116,6 +108,9 @@
 		connection.on("ReceiveMessage", function (user, message) {
 			recevedMessage(user,message);
 		});
+		connection.on("ReceiveImage", function (user, message) {
+			recevedImage(user, message);
+		});	
 	</script>
 }
 <!DOCTYPE html>
@@ -141,6 +136,9 @@
 						<div class="inside">
 							<div class="nav nav-tab menu">
 								<button class="btn"><img class="avatar-xl" src="/img/avatars/avatar-male-1.jpg" alt="avatar"></button>
+									
+								<p style="margin-right: 18px;margin-left: 18px;margin-bottom: 42px;" >@Model.account.FullName</p>
+								
 								<!-- <a href="#members" data-toggle="tab"><i class="material-icons">account_circle</i></a> -->
 								<a href="#discussions" data-toggle="tab" class="active"><i class="material-icons active">chat_bubble_outline</i></a>
 								<!-- <a href="#notifications" data-toggle="tab" class="f-grow1"><i class="material-icons">notifications_none</i></a> -->
@@ -1047,7 +1045,7 @@
 		<!-- Bootstrap/Swipe core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="/js/jquery-3.3.1.slim.min.jsjquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script>window.jQuery || document.write('<script src="/js/vendor/jquery-slim.min.js"><\/script>')</script>
 		<script src="/js/vendor/popper.min.js"></script>
 		<script src="/js/swipe.min.js"></script>

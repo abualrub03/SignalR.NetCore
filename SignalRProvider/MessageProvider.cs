@@ -20,6 +20,8 @@ namespace SignalRProvider
 				new SqlParameter{ ParameterName = "@messageDateTime", Value =  ms.messageDateTime },
 				new SqlParameter{ ParameterName = "@messageContent", Value =  ms.messageContent },
 				new SqlParameter{ ParameterName = "@messageStatus", Value =  ms.messageStatus },
+				new SqlParameter{ ParameterName = "@messageType", Value =  ms.messageType },
+				new SqlParameter{ ParameterName = "@messagePathIfExist", Value =  ms.messagePathIfExist },
 			};
 			return DAL.ExecuteNonQuery("spNewMessage");
 		}
