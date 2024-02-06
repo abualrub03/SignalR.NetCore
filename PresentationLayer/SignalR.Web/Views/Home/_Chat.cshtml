@@ -4,8 +4,33 @@
     Layout = "_DashboardLayout";
 }
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<style>
+	#uploadedImage {
+		position: relative; /* Allow positioning of the close image */
+	}
+
+	#close {
+		display: block; /* Hide the close image initially */
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 1; /* Ensure it's above the uploaded image */
+	}
+
+	#uploadedImage:hover #close {
+		display: block; /* Show the close image on hover */
+	}
+
+</style>
 @section scripts{
     <script type="text/javascript">
+		// Assuming you have a function to handle image removal:
+		function removeImage() {
+			// ... your code to remove the image
+		}
+
+		// Add an event listener to the close image:
+
 		$(function () {
 			$("#msgContainer")[0].scrollIntoView(false)
 		});
@@ -120,31 +145,58 @@
         });
 		/////////////////////////////////////////////////////////////////////////////////
 		$('#imageUpload').change(function () {
+
+
 			var file = this.files[0];
+
+			// Preview the image using FileReader
+			if (file) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					
+					document.getElementById("iamgesContainer").innerHTML =
+						`<img id="uploadedImage" style="width: 100px; height: 100px; margin-right: 30px;" src="`+e.target.result+`" id="impPrev" />
+													<button> <img src="/img/close.png" id="close" style="position: absolute; top: 5px; right: 35px;width:20px;" /></button>
+						`;
+
+					document.getElementById("content").style.marginBottom = "-70px";
+					document.getElementById("bottom").style.marginTop = "30px";
+					
+
+					
+
+				};
+				reader.readAsDataURL(file);
+			}
+		
+
+			
 			var formData = new FormData();
 			formData.append('image', file);
 			formData.append('senderId', '@Model.account.Id');
 			formData.append('recieverId', '@Model.accounts[0].Id');
+
 			$.ajax({
 				url: '/Home/UploadImage',
 				type: 'POST',
 				data: formData,
-				contentType: false,
-				processData: false,
+				contentType: false, // Required for FormData
+				processData: false, // Required for FormData
 				success: function (path) {
 					sentImage(path);
-					connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , path  , 'image').catch(function (err) {
-						return console.error(err.toString());
-					});
-					
-
-
+					connection.invoke("SendToUser", @Model.account.Id, @Model.accounts[0].Id, path, 'image')
+						.catch(function (err) {
+							console.error(err.toString());
+						});
 				},
 				error: function (error) {
-					// 
+					// Handle errors here
 				}
 			});
 		});
+
+		
+
 	</script>
 }
 <div class="tab-content" id="nav-tabContent">
@@ -188,7 +240,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="content" id="content">
+			<div class="content" id="content" style="">
 				<div id="msgContainer" class="container">
 					@foreach (var i in Model.listMessages)
 					{	
@@ -262,16 +314,29 @@
 						
 					}
 					<div  id="scrollToMe"></div>
-				</div>
+					
+                </div>
 			</div>
-			<div class="container">
+
+			<div class="container" style="
+    background-color: white;
+    position: relative;
+">
 				<div class="col-md-12">
-					<div class="bottom">
+					<div id="bottom"class="bottom" style="
+">
+
+						<div style="position: relative;" id="iamgesContainer" >
+						</div>
+
 						<div class="position-relative w-100">
-							<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"></textarea>
+							
+							<textarea class="form-control" id="messageInput" placeholder="Start typing for reply..." rows="1"> </textarea>
+							
 							<button type="button" id="sendToUser" class="btn send"><i class="material-icons">send</i></button>
 
 						</div>
+
 						<label>
 							<input type="file" type="file" id="imageUpload" accept="image/*" >
 							<span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
