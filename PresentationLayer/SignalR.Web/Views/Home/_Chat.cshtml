@@ -122,7 +122,6 @@
 				$("#msgContainer")[0].scrollIntoView(false)
 			}
 		}
-
 		function sentMessage(message) {
 			document.getElementById("msgContainer").innerHTML +=
 				`<div class="message me">
@@ -136,7 +135,6 @@
 				</div>`;
 			$("#msgContainer")[0].scrollIntoView(false)
 		}
-
 		function recevedImage(user, imageTextMessage , textMessage) {
 			if (@Model.accounts[0].Id == user) {
 				document.getElementById("msgContainer").innerHTML +=
@@ -146,7 +144,7 @@
 							<div class="text-group">
 								<div class="text">
 									<div class="chat-message chat-message-image">
-																<img src="`+ textMessage + `" style="width: 300px" alt="Image description">
+										<img src="`+ textMessage + `" style="width: 300px" alt="Image description">
 									</div>
 									<p> `+ imageTextMessage + ` </p>
 								</div>
@@ -206,9 +204,7 @@
 					document.getElementById("content").style.marginBottom = "-70px";
 					document.getElementById("bottom").style.marginTop = "30px";			
 				};
-				reader.readAsDataURL(file);
-				
-
+				reader.readAsDataURL(file);	
 			}
 			
 
