@@ -151,7 +151,7 @@ namespace SignalR.Controllers
         }
 
 		[HttpPost]
-		public string UploadImage(IFormFile image , int senderId , int recieverId)
+		public string UploadImage(IFormFile image , int senderId , int recieverId , string textMessage)
 		    {
 			string extension = Path.GetExtension(image.FileName);
 			string imageName = Guid.NewGuid().ToString() + extension;
