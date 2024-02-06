@@ -9,6 +9,7 @@ namespace Entities
 	public class Message
 	{
 		public string messageType  { set; get; }
+		public string messageImage { set; get; }
 		public string messagePathIfExist  { set; get; }
 		public int Id 					 {set;get;}
 		public int messageSenderId 		  {set;get;}

@@ -108,8 +108,10 @@
 		connection.on("ReceiveMessage", function (user, message) {
 			recevedMessage(user,message);
 		});
-		connection.on("ReceiveImage", function (user, message) {
-			recevedImage(user, message);
+		connection.on("ReceiveImage", function (user, image, textMessage){
+		
+			recevedImage(user, image, textMessage);
+
 		});	
 	</script>
 }

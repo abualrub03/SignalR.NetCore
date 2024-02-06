@@ -6,75 +6,79 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 <style>
 	#uploadedImage {
-		position: relative; /* Allow positioning of the close image */
+		position: relative;
 	}
-
 	#close {
-		display: block; /* Hide the close image initially */
+		display: block;
 		position: absolute;
 		top: 10px;
 		right: 10px;
-		z-index: 1; /* Ensure it's above the uploaded image */
+		z-index: 1; 
 	}
-
 	#uploadedImage:hover #close {
-		display: block; /* Show the close image on hover */
+		display: block; 
 	}
-
 </style>
 @section scripts{
     <script type="text/javascript">
-		
 		var image;
+		function setInputMessageAsDefault(){
+			console.log("tessssssst101");
+			document.getElementById("iamgesContainer").innerHTML =``;
+			document.getElementById("content").style.marginBottom = "0px";
+			document.getElementById("bottom").style.marginTop = "0px";
+			image = null;
+			file = null;
+			$("#msgContainer")[0].scrollIntoView(false)
+			const fileInput = document.getElementById("imageUpload");
+			const dataTransfer = new DataTransfer();
+			dataTransfer.items.add(new File([""], "new_file.jpg")); 
+			fileInput.files = dataTransfer.files;
+		}
 		function sentImageClickButton() {
 			var formData = new FormData();
-
 			formData.append('image', image);
 			formData.append('senderId', '@Model.account.Id');
 			formData.append('recieverId', '@Model.accounts[0].Id');
 			formData.append('textMessage', document.getElementById("messageInput").value);
-
-
 			$.ajax({
 				url: '/Home/UploadImage',
 				type: 'POST',
 				data: formData,
-				contentType: false, // Required for FormData
-				processData: false, // Required for FormData
+				contentType: false, 
+				processData: false, 
 				success: function (path) {
 					sentImage(path);
-					connection.invoke("SendToUser", @Model.account.Id, @Model.accounts[0].Id, path, 'image')
+					connection.invoke("SendToUser", @Model.account.Id, @Model.accounts[0].Id, path[0],path[1], 'image')
 						.catch(function (err) {
 							console.error(err.toString());
 						});
+					setInputMessageAsDefault();
 				},
 				error: function (error) {
-					// Handle errors here
 				}
 			});
-			
 		}
-		
-		// Assuming you have a function to handle image removal:
-		function removeImage() {
-			// ... your code to remove the image
-		}
-
-		// Add an event listener to the close image:
-
+		function removeImage() {}
 		$(function () {
 			$("#msgContainer")[0].scrollIntoView(false)
 		});
 		$("#messageInput").keydown(function (event) {
 			if (event.key === "Enter") {
-				var message = $(this).val();
-				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , message ,'text').catch(function (err) {
-					return console.error(err.toString());
-				});
-				event.preventDefault();
-				sentMessage(message);
-				$("#msgContainer")[0].scrollIntoView(false)
-				$(this).val("");
+				if (image == null) {
+					var message = document.getElementById("messageInput").value;
+					connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , '', message, 'text').catch(function (err) {
+						return console.error(err.toString());
+					});
+					event.preventDefault();
+					sentMessage(message);
+					document.getElementById("messageInput").value = '';
+					$("#msgContainer")[0].scrollIntoView(false)
+				} else {
+					console.log("yupwefuckedup");
+					sentImageClickButton();
+					image = null;
+				}			
 			}
 		});
 		setInterval(function () {
@@ -118,6 +122,7 @@
 				$("#msgContainer")[0].scrollIntoView(false)
 			}
 		}
+
 		function sentMessage(message) {
 			document.getElementById("msgContainer").innerHTML +=
 				`<div class="message me">
@@ -130,9 +135,9 @@
 					</div>
 				</div>`;
 			$("#msgContainer")[0].scrollIntoView(false)
-
 		}
-		function recevedImage(user, message) {
+
+		function recevedImage(user, imageTextMessage , textMessage) {
 			if (@Model.accounts[0].Id == user) {
 				document.getElementById("msgContainer").innerHTML +=
 					`<div class="message">
@@ -141,13 +146,14 @@
 							<div class="text-group">
 								<div class="text">
 									<div class="chat-message chat-message-image">
-														<img src="`+message+`" style="width: 300px" alt="Image description">
+																<img src="`+ textMessage + `" style="width: 300px" alt="Image description">
 									</div>
+									<p> `+ imageTextMessage + ` </p>
 								</div>
 							</div>
 						</div>
 					</div>`;
-				$("#msgContainer")[0].scrollIntoView(false)
+				$("#msgContainer")[0].scrollIntoView(consoe)
 			}
 		}
         function sentImage(path) {
@@ -157,8 +163,9 @@
 						<div class="text-group me">
 							<div class="text me">
 								<div class="chat-message chat-message-image">
-									<img src="`+ path + `" style="width:300px" alt="Image description">
+									<img src="`+path[1]+`" style="width:300px" alt="Image description">
 								</div>
+									<p>`+  path[0]  +` </p>
 							</div>
 						</div>
 					</div>
@@ -168,25 +175,22 @@
         document.getElementById("sendToUser").addEventListener("click", function (event) {
 			if (image == null ) {
 				var message = document.getElementById("messageInput").value;
-				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , message, 'text').catch(function (err) {
-					return console.error(err.toString());
+				connection.invoke("SendToUser", @Model.account.Id , @Model.accounts[0].Id , '', message , 'text').catch(function (err) {
+					return console.error(err.toString());				
 				});
 				event.preventDefault();
 				sentMessage(message);
+				document.getElementById("messageInput").value = '';
 				$("#msgContainer")[0].scrollIntoView(false)
 			} else  {
 				console.log("yupwefuckedup");
 				sentImageClickButton();
 				image = null;
 			}
-			
         });
-		
-		
 		/////////////////////////////////////////////////////////////////////////////////
 		$('#imageUpload').change(function () {
 			console.log("fffffffffffffffk");
-
 			var file = this.files[0];
 			image = this.files[0];
 			// Preview the image using FileReader
@@ -196,16 +200,21 @@
 					document.getElementById("iamgesContainer").innerHTML =
 						`
 							<img id="uploadedImage" style="width: 100px; height: 100px; margin-right: 30px;" src="`+e.target.result+`" id="impPrev" />
-							<button> <img src="/img/close.png" id="close" style="position: absolute; top: 5px; right: 35px;width:20px;" /></button>
+							<img src="/img/close.png" id="close"   style="position: absolute; top: 5px; right: 35px; width:20px;" onclick="setInputMessageAsDefault()" />
 						`;
 
 					document.getElementById("content").style.marginBottom = "-70px";
 					document.getElementById("bottom").style.marginTop = "30px";			
 				};
 				reader.readAsDataURL(file);
+				
+
 			}
 			
+
+			
 		});
+		
 
 		
 		
@@ -222,7 +231,7 @@
 				<div class="container">
 					<div class="col-md-12">
 						<div class="inside">
-							<a href="#"><img class="avatar-md" src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+							<a href="#"><img class="avatar-md"  src="/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
 							<div class="status" id="statusChat">
 								@if (Model.accounts[0].IsActive == 1)
 								{
@@ -268,6 +277,7 @@
 												<div class="chat-message chat-message-image">
 													<img src="@i.messagePathIfExist" style="width:300px" alt="Image description">
 												</div>
+												<p>@i.messageContent</p>
 											</div>
 										</div>
 									</div>
@@ -285,6 +295,7 @@
 												<div class="chat-message chat-message-image">
 													<img src="@i.messagePathIfExist" style="width:300px" alt="Image description">
 												</div>
+												<p>@i.messageContent</p>
 											</div>
 										</div>
 									</div>
@@ -340,6 +351,7 @@
 ">
 
 						<div style="position: relative;" id="iamgesContainer" >
+							
 						</div>
 
 						<div class="position-relative w-100">
@@ -351,7 +363,7 @@
 						</div>
 
 						<label>
-							<input type="file" type="file" id="imageUpload" accept="image/*" >
+							<input type="file" id="imageUpload" accept="image/*" >
 							<span class="btn attach d-sm-block d-none"><i class="material-icons">attach_file</i></span>
 						</label>
 					</div>

@@ -151,7 +151,7 @@ namespace SignalR.Controllers
         }
 
 		[HttpPost]
-		public string UploadImage(IFormFile image , int senderId , int recieverId , string textMessage)
+		public List<string > UploadImage(IFormFile image , int senderId , int recieverId , string textMessage)
 		    {
 			string extension = Path.GetExtension(image.FileName);
 			string imageName = Guid.NewGuid().ToString() + extension;
@@ -164,7 +164,12 @@ namespace SignalR.Controllers
 			}
             SignalRProvider.MessageProvider messageProvider = new SignalRProvider.MessageProvider(); 
             Entities.Message ms = new Entities.Message();
-            ms.messageContent = imageName;
+            if(textMessage == null)
+            {
+                textMessage = "";
+            }
+            ms.messageImage = imageName;
+            ms.messageContent = textMessage;
             ms.messagePathIfExist = pathToReturn;
 			ms.messageDateTime = DateTime.UtcNow;
 			ms.messageStatus = "send";
@@ -172,7 +177,10 @@ namespace SignalR.Controllers
 			ms.messageSenderId= senderId;
             ms.messageRecieverId = recieverId;
             messageProvider.NewMessage(ms);
-            return pathToReturn;
+            List<string> messages = new List<string>();
+            messages.Add(textMessage);
+            messages.Add(pathToReturn);
+            return messages;
 		}
 
 

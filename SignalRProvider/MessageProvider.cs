@@ -12,13 +12,23 @@ namespace SignalRProvider
 	public class MessageProvider : Core.Disposable
 	{
 		public bool NewMessage(Entities.Message ms)
-		{
+			{
+			if ( ms.messageImage == null)
+			{
+				ms.messageImage = "";
+			}
+			if (ms.messageContent == null)
+			{
+				ms.messageContent = "";
+			}
 			using var DAL = new DataAccess.DataAccessLayer();
 			DAL.Parameters = new List<SqlParameter> {
+
 				new SqlParameter{ ParameterName = "@messageSenderId", Value =  ms.messageSenderId},
 				new SqlParameter{ ParameterName = "@messageRecieverId", Value = ms.messageRecieverId },
 				new SqlParameter{ ParameterName = "@messageDateTime", Value =  ms.messageDateTime },
 				new SqlParameter{ ParameterName = "@messageContent", Value =  ms.messageContent },
+				new SqlParameter{ ParameterName = "@messageImage", Value =  ms.messageImage },
 				new SqlParameter{ ParameterName = "@messageStatus", Value =  ms.messageStatus },
 				new SqlParameter{ ParameterName = "@messageType", Value =  ms.messageType },
 				new SqlParameter{ ParameterName = "@messagePathIfExist", Value =  ms.messagePathIfExist },

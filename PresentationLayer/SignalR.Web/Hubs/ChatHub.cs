@@ -9,7 +9,7 @@ namespace SignalR.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-        public async Task SendToUser(int senderId, int receiverId, string message , string type)
+        public async Task SendToUser(int senderId, int receiverId ,string image, string message, string type)
         {   if (type == "text")
             {
                 Message ms = new Message();
@@ -21,14 +21,14 @@ namespace SignalR.Hubs
                 ms.messageType = "text";
                 ms.messagePathIfExist = "";
 
-                var msResult = new SignalRProvider.MessageProvider().NewMessage(ms);
+                new SignalRProvider.MessageProvider().NewMessage(ms);
                 var acc = new SignalRProvider.AccountProvider().returnAccountOnId(ms.messageRecieverId);
 				await Clients.Client(acc.ConnectionId).SendAsync("ReceiveMessage", ms.messageSenderId, ms.messageContent);
 			}
             else{
 
 				var acc = new SignalRProvider.AccountProvider().returnAccountOnId(receiverId);
-				await Clients.Client(acc.ConnectionId).SendAsync("ReceiveImage", senderId, message);
+				await Clients.Client(acc.ConnectionId).SendAsync("ReceiveImage", senderId, image, message);
 
 
 			}
