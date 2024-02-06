@@ -23,7 +23,6 @@
 	<ItemGroup>
 	  <Folder Include="Models\" />
 	  <Folder Include="wwwroot\Document\SignalR\" />
-	  <Folder Include="wwwroot\SignalR.hub\javascript\" />
 	  <Folder Include="wwwroot\SignalR.hub\css\" />
 	</ItemGroup>
 
