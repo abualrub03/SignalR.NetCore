@@ -17,6 +17,19 @@ namespace SignalR.Controllers
 		{
 			_environment = environment;
 		}
+
+		[HttpGet]
+		public IActionResult _chatViewJS(ViewModel.HomePageViewModel v)
+		{
+			return PartialView("_chatViewJS", v);
+		}
+
+		[HttpGet]
+		public IActionResult _dashboardViewJS(ViewModel.HomePageViewModel v)
+		{
+			return PartialView("_dashboardViewJS", v);
+		}
+
 		[HttpPost]
         public int CheckActivity (int Id)
         {

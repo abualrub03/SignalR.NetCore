@@ -3,23 +3,6 @@
     ViewData["Title"] = "_Chat";
     Layout = "_DashboardLayout";
 }
-
-<style>
-	#uploadedImage {
-		position: relative;
-	}
-	#close {
-		display: block;
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		z-index: 1; 
-	}
-	#uploadedImage:hover #close {
-		display: block; 
-	}
-</style>		
-
 <div class="tab-content" id="nav-tabContent">
 	<!-- Start of Babble -->
 	<div class="babble tab-pane fade active show" id="list-chat" role="tabpanel" aria-labelledby="list-chat-list">
@@ -200,3 +183,4 @@
 	</div>
 	<!-- End of Babble -->	
 </div>
+@Html.Partial("_chatViewJS", Model)
