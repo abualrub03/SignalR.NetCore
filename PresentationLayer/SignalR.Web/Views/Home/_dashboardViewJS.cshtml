@@ -2,9 +2,7 @@
 @{
 	ViewData["Title"] = "_dashboardViewJS";
 }
-
 <script type="text/javascript">
-
 	var SearchFlag = 0;
 	$(document).ready(function () {
 		$("#conversations").keyup(function () {
@@ -14,8 +12,6 @@
 		});
 	});
 	var strFilterMode = "FilterAll";
-
-
 	document.getElementById("FilterAll").addEventListener("click", function () {
 		document.getElementById("conversations").value = "";
 		SearchFlag = 0;
@@ -103,11 +99,10 @@
 		});
 	});
 	connection.on("ReceiveMessage", function (user, message) {
-		recevedMessage(user, message);
+		handleMessage(user, message);
+
 	});
-	connection.on("ReceiveImage", function (user, image, textMessage) {
-
-		recevedImage(user, image, textMessage);
-
+	connection.on("ReceiveImage", function (user, image) {
+		handleMessage(user, null, true, image);
 	});
 </script>

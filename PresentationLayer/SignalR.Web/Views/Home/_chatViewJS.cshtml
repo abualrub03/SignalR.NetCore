@@ -6,6 +6,32 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" >
     var image;
+
+    function handleMessage(user, message, isImage = false, textMessage = null) {
+        const isSentByMe = user === "@Model.account.Id";
+        const messageContainer = document.getElementById("msgContainer");
+        const messageHTML = `
+                <div class="message${isSentByMe ? ' me' : ''}">
+                    ${isSentByMe ? '' : `<img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">`}
+                <div class="text-main">
+                          <div class="text-group${isSentByMe ? ' me' : ''}">
+                            <div class="text${isSentByMe ? ' me' : ''}">
+                      ${isImage ? `
+                        <div class="chat-message chat-message-image">
+                                  <img src="${textMessage[1]}" style="width: 300px" alt="Image description">
+                        </div>
+                            <p>${textMessage[0]}</p>
+                      ` : `
+                        <p>${message}</p>
+                      `}
+                    </div>
+                  </div>
+                </div>
+            </div>
+        `;
+        messageContainer.innerHTML += messageHTML;
+        messageContainer.scrollIntoView(false);
+    }
     function setInputMessageAsDefault() {
         document.getElementById("iamgesContainer").innerHTML = ``;
         document.getElementById("content").style.marginBottom = "0px";
@@ -15,7 +41,7 @@
         $("#msgContainer")[0].scrollIntoView(false);
         const fileInput = document.getElementById("imageUpload");
         const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(new File([""], "new_file.jpg"));
+        dataTransfer.items.add(new File([""], ""));
         fileInput.files = dataTransfer.files;
     }
     function sentImageClickButton() {
@@ -31,7 +57,7 @@
             contentType: false,
             processData: false,
             success: function (path) {
-                sentImage(path);
+                handleMessage('@Model.account.Id', null, true , path);
                 connection.invoke("SendToUser", @Model.account.Id, @Model.accounts[0].Id, path[0], path[1], 'image')
                     .catch(function (err) {
                         console.error(err.toString());
@@ -54,7 +80,7 @@
                     return console.error(err.toString());
                 });
                 event.preventDefault();
-                sentMessage(message);
+                handleMessage('@Model.account.Id', message); 
                 document.getElementById("messageInput").value = '';
                 $("#msgContainer")[0].scrollIntoView(false)
             } else {
@@ -88,71 +114,7 @@
             }
         });
     }, 0.1 * 60 * 1000);
-    function recevedMessage(user, message) {
-        if (@Model.accounts[0].Id == user) {
-            document.getElementById("msgContainer").innerHTML +=
-                `<div class="message">
-                        <img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-                        <div class="text-main">
-                            <div class="text-group">
-                                <div class="text">
-                                    <p> ` + message + ` </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-            $("#msgContainer")[0].scrollIntoView(false);
-        }
-    }
-    function sentMessage(message) {
-        document.getElementById("msgContainer").innerHTML +=
-            `<div class="message me">
-                 <div class="text-main">
-                     <div class="text-group me">
-                         <div class="text me">
-                             <p> ` + message + ` </p>
-                         </div>
-                     </div>
-                 </div>
-             </div>`;
-        $("#msgContainer")[0].scrollIntoView(false);
-    }
-    
-    function recevedImage(user, imageTextMessage, textMessage) {
-        if (@Model.accounts[0].Id == user) {
-            document.getElementById("msgContainer").innerHTML +=
-                `<div class="message">
-            <img class="avatar-md" src="/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-            <div class="text-main">
-                <div class="text-group">
-                    <div class="text">
-                        <div class="chat-message chat-message-image">
-                            <img src="` + textMessage + `" style="width: 300px" alt="Image description">
-                        </div>
-                        <p> ` + imageTextMessage + ` </p>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-            $("#msgContainer")[0].scrollIntoView(consoe);
-        }
-    }
-    function sentImage(path) {
-        document.getElementById("msgContainer").innerHTML +=
-            `<div class="message me">
-                 <div class="text-main">
-                     <div class="text-group me">
-                         <div class="text me">
-                             <div class="chat-message chat-message-image">
-                                 <img src="` + path[1] + `" style="width:300px" alt="Image description">
-                             </div>
-                             <p>` + path[0] + ` </p>
-                         </div>
-                     </div>
-                 </div>
-             </div>`;
-        $("#msgContainer")[0].scrollIntoView(false);
-    }
+   
     document.getElementById("sendToUser").addEventListener("click", function (event) {
         if (image == null) {
             var message = document.getElementById("messageInput").value;
@@ -160,7 +122,7 @@
                 return console.error(err.toString());
             });
             event.preventDefault();
-            sentMessage(message);
+            handleMessage('@Model.account.Id',message);
             document.getElementById("messageInput").value = '';
             $("#msgContainer")[0].scrollIntoView(false)
         } else {
@@ -168,7 +130,7 @@
             image = null;
         }
     });
-    /////////////////////////////////////////////////////////////////////////////////
+    /*Begin what*/
     $('#imageUpload').change(function () {
         var file = this.files[0];
         image = this.files[0];
@@ -191,6 +153,7 @@
             reader.readAsDataURL(file);
         }
     });
+    /*end what */
 
 
 </script>
